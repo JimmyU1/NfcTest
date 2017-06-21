@@ -59,28 +59,12 @@ public class TestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
-
-        tagIdEdit = (EditText) findViewById(R.id.tagid_edt);
-        typeEdit = (EditText) findViewById(R.id.type_edt);
-        dateEdit = (EditText) findViewById(R.id.date_edt);
-        isCompleteEdit = (EditText) findViewById(R.id.is_complete_edt);
-        progressText = (TextView) findViewById(R.id.test_progress);
-
-        mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
-        mPendingIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
-        IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_TECH_DISCOVERED);
-        ndef.addCategory("*/*");
-        record = new Record();
-
+        
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 
-
-        //保持屏幕常亮
-        keepScreenOn(TestActivity.this, true);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -113,6 +97,21 @@ public class TestActivity extends AppCompatActivity {
                 return true;
             }
         });
+        //保持屏幕常亮
+        keepScreenOn(TestActivity.this, true);
+
+        tagIdEdit = (EditText) findViewById(R.id.tagid_edt);
+        typeEdit = (EditText) findViewById(R.id.type_edt);
+        dateEdit = (EditText) findViewById(R.id.date_edt);
+        isCompleteEdit = (EditText) findViewById(R.id.is_complete_edt);
+        progressText = (TextView) findViewById(R.id.test_progress);
+
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        mPendingIntent = PendingIntent.getActivity(this, 0,
+                new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+        IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_TECH_DISCOVERED);
+        ndef.addCategory("*/*");
+        record = new Record();
 
 
     }

@@ -1,65 +1,67 @@
 package com.crsc.nfctest.activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
-import android.widget.ListView;
+import android.widget.EditText;
 
 import com.crsc.nfctest.R;
-import com.crsc.nfctest.adapter.RecordAdapter;
 import com.crsc.nfctest.model.Record;
+import com.crsc.nfctest.util.NfcUtil;
 
-import org.litepal.LitePal;
 import org.litepal.crud.DataSupport;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class RecordActivity extends AppCompatActivity {
+public class RecordDetailActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
-    private List<Record> records;
-    private ListView recordList;
-    private RecordAdapter adapter;
+
+    private EditText tagId;
+    private EditText tagType;
+    private EditText testDate;
+    private EditText isComplete;
+    private EditText testCount;
+    private EditText testResult;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_record);
+        setContentView(R.layout.activity_record_detail);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null){
+        if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
         }
-        navigationView.setCheckedItem(R.id.nav_record);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 mDrawerLayout.closeDrawers();
                 Intent intent;
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.nav_test:
-                        intent = new Intent(RecordActivity.this, TestActivity.class);
+                        intent = new Intent(RecordDetailActivity.this, TestActivity.class);
                         startActivity(intent);
                         finish();
                         break;
                     case R.id.nav_record:
+                        intent = new Intent(RecordDetailActivity.this, RecordActivity.class);
+                        startActivity(intent);
+                        finish();
                         break;
                     case R.id.nav_about:
-                        intent = new Intent(RecordActivity.this, AboutActivity.class);
+                        intent = new Intent(RecordDetailActivity.this, AboutActivity.class);
                         startActivity(intent);
                         finish();
                         break;
@@ -72,37 +74,47 @@ public class RecordActivity extends AppCompatActivity {
             }
         });
 
-        records = new ArrayList<>();
-        loadRecords();
+        tagId = (EditText) findViewById(R.id.tag_id);
+        tagType = (EditText) findViewById(R.id.tag_type);
+        testDate = (EditText) findViewById(R.id.test_date);
+        isComplete = (EditText) findViewById(R.id.is_complete);
+        testCount = (EditText) findViewById(R.id.test_count);
+        testResult = (EditText) findViewById(R.id.test_result);
 
-        adapter = new RecordAdapter(RecordActivity.this, R.layout.record_item, records);
-        recordList = (ListView) findViewById(R.id.record_list);
-        recordList.setAdapter(adapter);
-        recordList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Record record = records.get(position);
-                Intent intent = new Intent(RecordActivity.this, RecordDetailActivity.class);
-                intent.putExtra("tag_id", record.getTagId());
-                startActivity(intent);
-                finish();
-            }
-        });
-    }
-
-
-    private void loadRecords(){
-        records = DataSupport.findAll(Record.class);
+        String tagIdString = getIntent().getStringExtra("tag_id");
+        showTestInfo(tagIdString);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 break;
             default:
         }
         return true;
+    }
+
+    private void showTestInfo(String id) {
+        List<Record> records = DataSupport.where("tagId = ?", id).find(Record.class);
+        if (records.size() > 0) {
+            Record record = records.get(0);
+            tagId.setText(record.getTagId());
+            tagType.setText(record.getTpye());
+            testDate.setText(record.getDate());
+            testCount.setText(record.getCount().toString());
+            if (record.getResult() == 1)
+                testResult.setText("通过");
+            else
+                testResult.setText("不通过");
+            if (record.getIsComplete() == 1)
+                isComplete.setText("完整");
+            else
+                isComplete.setText("不完整");
+        } else {
+            NfcUtil.toastMessage(RecordDetailActivity.this, "不存在相关数据");
+        }
+
     }
 }

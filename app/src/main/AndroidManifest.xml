@@ -30,7 +30,8 @@
             android:label="@string/nav_record" />
         <activity
             android:name=".activity.AboutActivity"
-            android:label="@string/nav_about"></activity>
+            android:label="@string/nav_about" />
+        <activity android:name=".activity.RecordDetailActivity"></activity>
     </application>
 
 </manifest>
