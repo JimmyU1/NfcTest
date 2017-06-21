@@ -5,17 +5,33 @@ import org.litepal.crud.DataSupport;
 import java.util.Date;
 
 /**
- * Created by liuji on 2017/6/15.
+ * 测试记录模型类
  */
-
 public class Record extends DataSupport {
 
+    private int id;
+    private String tagId;
     private String tpye;
-    private Date date;
-    private Integer isAuthenticated;
-    private Integer isEmpty;
+    private String date;
+    private Integer isComplete;
     private Integer count;
     private Integer result;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getTagId() {
+        return tagId;
+    }
+
+    public void setTagId(String tagId) {
+        this.tagId = tagId;
+    }
 
     public String getTpye() {
         return tpye;
@@ -25,28 +41,20 @@ public class Record extends DataSupport {
         this.tpye = tpye;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
-    public Integer getIsAuthenticated() {
-        return isAuthenticated;
+    public Integer getIsComplete() {
+        return isComplete;
     }
 
-    public void setIsAuthenticated(Integer isAuthenticated) {
-        this.isAuthenticated = isAuthenticated;
-    }
-
-    public Integer getIsEmpty() {
-        return isEmpty;
-    }
-
-    public void setIsEmpty(Integer isEmpty) {
-        this.isEmpty = isEmpty;
+    public void setIsComplete(Integer isComplete) {
+        this.isComplete = isComplete;
     }
 
     public Integer getCount() {

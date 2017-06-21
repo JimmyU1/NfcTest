@@ -14,15 +14,110 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
     </FrameLayout>
+
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:menu="@menu/nav_menu"
-        app:headerLayout="@layout/nav_header"/>
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/nav_menu" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize">
+
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/tagid_text"
+                    android:text="标签编号："
+                    android:textSize="15dp" />
+
+                <EditText
+                    android:id="@+id/tagid_edt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="15"
+                    android:enabled="false"
+                    android:textSize="15dp" />
+            </TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/type_text"
+                    android:text="标签类型："
+                    android:textSize="15dp" />
+
+                <EditText
+                    android:id="@+id/type_edt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="15"
+                    android:enabled="false"
+                    android:textSize="15dp" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/test_date"
+                    android:text="测试日期："
+                    android:textSize="15dp" />
+
+                <EditText
+                    android:id="@+id/date_edt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="15"
+                    android:enabled="false"
+                    android:textSize="15dp" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/is_complete_text"
+                    android:text="是否完整："
+                    android:textSize="15dp" />
+
+                <EditText
+                    android:id="@+id/is_complete_edt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="15"
+                    android:enabled="false"
+                    android:textSize="15dp" />
+
+            </TableRow>
+            <TableRow>
+                <ScrollView
+                    android:layout_column="0"
+                    android:layout_span="2">
+                    <TextView
+                        android:id="@+id/test_progress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="" />
+                </ScrollView>
+            </TableRow>
+        </TableLayout>
+
+    </LinearLayout>
 </android.support.v4.widget.DrawerLayout>
 

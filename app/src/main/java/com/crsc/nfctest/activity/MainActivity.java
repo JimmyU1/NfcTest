@@ -13,6 +13,8 @@ import android.view.MenuItem;
 
 import com.crsc.nfctest.R;
 
+import org.litepal.LitePal;
+
 
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
@@ -59,12 +61,13 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        LitePal.getDatabase();
     }
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent;
         switch (item.getItemId()){
             case android.R.id.home:
                 mDrawerLayout.openDrawer(GravityCompat.START);
