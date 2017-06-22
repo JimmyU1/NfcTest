@@ -33,13 +33,16 @@ import com.crsc.nfctest.util.NfcUtil;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * 测试界面
+ */
 public class TestActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
 
-    private final static String formatString = "00000000000000000000000000000000";
-    private final static String testString = "11111111111111111111111111111111";
-    private final static int testCount = 200;
+    private final static String formatString = "00000000000000000000000000000000"; //标签源数据
+    private final static String testString = "11111111111111111111111111111111"; //标签读写测试数据
+    private final static int testCount = 5000; //读写测试次数
     private static WakeLock wakeLock;
     private NfcAdapter mNfcAdapter = null;
     private PendingIntent mPendingIntent = null;
@@ -49,7 +52,8 @@ public class TestActivity extends AppCompatActivity {
     private EditText dateEdit;
     private EditText isCompleteEdit;
     private TextView progressText;
-    private Record record;
+
+    private Record record; //测试记录对象
 
     private int successCount = 0;
     private int failedCount = 0;
@@ -59,12 +63,19 @@ public class TestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
-        
+
+        //初始化界面控件
+        tagIdEdit = (EditText) findViewById(R.id.tagid_edt);
+        typeEdit = (EditText) findViewById(R.id.type_edt);
+        dateEdit = (EditText) findViewById(R.id.date_edt);
+        isCompleteEdit = (EditText) findViewById(R.id.is_complete_edt);
+        progressText = (TextView) findViewById(R.id.test_progress);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-
+        navigationView.bringToFront();
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -74,19 +85,15 @@ public class TestActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                mDrawerLayout.closeDrawers();
-                Intent intent;
                 switch (item.getItemId()) {
                     case R.id.nav_test:
                         break;
                     case R.id.nav_record:
-                        intent = new Intent(TestActivity.this, RecordActivity.class);
-                        startActivity(intent);
+                        startActivity(new Intent(TestActivity.this, RecordActivity.class));
                         finish();
                         break;
                     case R.id.nav_about:
-                        intent = new Intent(TestActivity.this, AboutActivity.class);
-                        startActivity(intent);
+                        startActivity(new Intent(TestActivity.this, AboutActivity.class));
                         finish();
                         break;
                     case R.id.nav_close:
@@ -94,24 +101,22 @@ public class TestActivity extends AppCompatActivity {
                         break;
                     default:
                 }
+                mDrawerLayout.closeDrawers();
+
                 return true;
             }
         });
         //保持屏幕常亮
         keepScreenOn(TestActivity.this, true);
 
-        tagIdEdit = (EditText) findViewById(R.id.tagid_edt);
-        typeEdit = (EditText) findViewById(R.id.type_edt);
-        dateEdit = (EditText) findViewById(R.id.date_edt);
-        isCompleteEdit = (EditText) findViewById(R.id.is_complete_edt);
-        progressText = (TextView) findViewById(R.id.test_progress);
-
+        //初始化变量
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         mPendingIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
         IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_TECH_DISCOVERED);
         ndef.addCategory("*/*");
         record = new Record();
+
 
 
     }
@@ -141,12 +146,18 @@ public class TestActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * 读写标签出发的事件
+     * @param intent 意图
+     */
     public void onNewIntent(Intent intent) {
         setIntent(intent);
+        //获取标签信息
         final Tag tagFromIntent = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
         final String action = intent.getAction();
         final MifareClassic mMifareClassic = MifareClassic.get(tagFromIntent);
 
+        //获取标签ID、类型、测试时间并填入控件
         String tagId = mMifareClassic.getTag().getId().toString();
         record.setTagId(tagId);
         tagIdEdit.setText(tagId);
@@ -172,12 +183,14 @@ public class TestActivity extends AppCompatActivity {
         record.setDate(testDate);
         dateEdit.setText(testDate);
 
+        //开启进度条
         final ProgressDialog progressDialog = new ProgressDialog(TestActivity.this);
         progressDialog.setTitle("读写测试");
         progressDialog.setMessage("测试中...");
         progressDialog.setCancelable(false);
         progressDialog.show();
 
+        //开启标签读写测试线程
         Thread thread = new Thread(new Runnable() {
             int sectorNum = 0;
             int blockNum = 0;
@@ -191,10 +204,13 @@ public class TestActivity extends AppCompatActivity {
             public void run() {
                 while (testNum < testCount) {
                     try {
+                        //连接标签
                         if (mMifareClassic.isConnected())
                             mMifareClassic.close();
                         mMifareClassic.connect();
                         sectorCount = mMifareClassic.getSectorCount();
+
+                        //开始读写测试
                         for (sectorNum = 0; sectorNum < sectorCount; sectorNum++) {
                             blockCount = NfcUtil.getBlockNumberBySector(sectorNum);
                             authenticate = mMifareClassic.authenticateSectorWithKeyA(sectorNum,
@@ -206,10 +222,12 @@ public class TestActivity extends AppCompatActivity {
                                     mMifareClassic.writeBlock(NfcUtil.blockNumber(sectorNum, blockNum), NfcUtil.hexStringToBytes(testString));
                                     mMifareClassic.writeBlock(NfcUtil.blockNumber(sectorNum, blockNum), NfcUtil.hexStringToBytes(formatString));
                                     if (blockNum == (blockCount - 1)) {
+                                        //记录读写成功的次数
                                         successCount++;
                                     }
                                 }
                             } else {
+                                //记录读写失败的次数
                                 failedCount++;
                             }
                             testNum++;
@@ -218,6 +236,7 @@ public class TestActivity extends AppCompatActivity {
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
+                                        //界面展示测试信息
                                         progressText.append(testString);
                                     }
                                 });
@@ -233,6 +252,7 @@ public class TestActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        //输出标签是否完整、测试次数、测试结果信息，并记录到Record对象中
                         if (failedCount == 0) {
                             isCompleteEdit.setText("完整");
                             isCompleteEdit.setTextColor(Color.BLUE);
@@ -250,7 +270,10 @@ public class TestActivity extends AppCompatActivity {
                             record.setResult(0);
                         }
 
+                        //关闭进度条
                         progressDialog.dismiss();
+
+                        //开启对话框
                         AlertDialog.Builder diolag = new AlertDialog.Builder(TestActivity.this);
                         diolag.setTitle("测试结果");
                         diolag.setMessage("测试次数：" + testCount + "\t\t成功：" + successCount + "次\t\t失败：" + failedCount);
@@ -258,6 +281,7 @@ public class TestActivity extends AppCompatActivity {
                         diolag.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                //将测试数据保存到本地数据中
                                 record.save();
                             }
                         });
@@ -280,6 +304,11 @@ public class TestActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * 保持屏幕常亮，一点屏幕关闭将自动终止测试
+     * @param context 应用上下文
+     * @param on 是否保持常亮
+     */
     public static void keepScreenOn(Context context, boolean on) {
         if (on) {
             PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
@@ -293,6 +322,11 @@ public class TestActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * 日期格式化
+     * @param date 日期对象
+     * @return 字符串类型日期
+     */
     private String formatDate(Date date) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return sdf.format(date);

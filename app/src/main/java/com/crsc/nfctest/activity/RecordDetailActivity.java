@@ -20,6 +20,9 @@ import org.litepal.crud.DataSupport;
 
 import java.util.List;
 
+/**
+ * 测试记录
+ */
 public class RecordDetailActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
 
@@ -35,15 +38,26 @@ public class RecordDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record_detail);
 
+        //初始化界面控件
+        tagId = (EditText) findViewById(R.id.tag_id);
+        tagType = (EditText) findViewById(R.id.tag_type);
+        testDate = (EditText) findViewById(R.id.test_date);
+        isComplete = (EditText) findViewById(R.id.is_complete);
+        testCount = (EditText) findViewById(R.id.test_count);
+        testResult = (EditText) findViewById(R.id.test_result);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.bringToFront();
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
         }
+
+        //为NavigationView添加点击事件
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -74,13 +88,7 @@ public class RecordDetailActivity extends AppCompatActivity {
             }
         });
 
-        tagId = (EditText) findViewById(R.id.tag_id);
-        tagType = (EditText) findViewById(R.id.tag_type);
-        testDate = (EditText) findViewById(R.id.test_date);
-        isComplete = (EditText) findViewById(R.id.is_complete);
-        testCount = (EditText) findViewById(R.id.test_count);
-        testResult = (EditText) findViewById(R.id.test_result);
-
+        //获取标签ID，并在界面显示相应信息
         String tagIdString = getIntent().getStringExtra("tag_id");
         showTestInfo(tagIdString);
     }
@@ -96,6 +104,11 @@ public class RecordDetailActivity extends AppCompatActivity {
         return true;
     }
 
+
+    /**
+     * 根据标签ID在界面展示对应记录的详细信息
+     * @param id 标签ID
+     */
     private void showTestInfo(String id) {
         List<Record> records = DataSupport.where("tagId = ?", id).find(Record.class);
         if (records.size() > 0) {

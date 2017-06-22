@@ -18,9 +18,9 @@ import com.crsc.nfctest.model.Record;
 import java.util.List;
 
 /**
- * Created by liuji on 2017/6/21.
+ * 读写记录适配器
+ * 用于初始化读写记录列表控件
  */
-
 public class RecordAdapter extends ArrayAdapter<Record> {
 
     private int resourceId;

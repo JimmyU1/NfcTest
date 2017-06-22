@@ -1,13 +1,13 @@
 package com.crsc.nfctest.activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
@@ -15,7 +15,9 @@ import com.crsc.nfctest.R;
 
 import org.litepal.LitePal;
 
-
+/**
+ * 主界面
+ */
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
 
@@ -23,34 +25,37 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //初始化各类控件
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.bringToFront();
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
         }
+
+        //创建数据库
+        LitePal.getDatabase();
+
+        //为NavigationView设置点击事件
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                mDrawerLayout.closeDrawers();
-                Intent intent;
                 switch (item.getItemId()){
                     case R.id.nav_test:
-                        intent = new Intent(MainActivity.this, TestActivity.class);
-                        startActivity(intent);
+                        startActivity(new Intent(MainActivity.this, TestActivity.class));
                         finish();
                         break;
                     case R.id.nav_record:
-                        intent = new Intent(MainActivity.this, RecordActivity.class);
-                        startActivity(intent);
+                        startActivity(new Intent(MainActivity.this, RecordActivity.class));
                         finish();
                         break;
                     case R.id.nav_about:
-                        intent = new Intent(MainActivity.this, AboutActivity.class);
-                        startActivity(intent);
+                        startActivity(new Intent(MainActivity.this, AboutActivity.class));
                         finish();
                         break;
                     case R.id.nav_close:
@@ -58,11 +63,11 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     default:
                 }
+                item.setCheckable(true);
+                mDrawerLayout.closeDrawers();
                 return true;
             }
         });
-
-        LitePal.getDatabase();
     }
 
 

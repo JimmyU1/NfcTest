@@ -9,13 +9,13 @@ import java.util.Date;
  */
 public class Record extends DataSupport {
 
-    private int id;
-    private String tagId;
-    private String tpye;
-    private String date;
-    private Integer isComplete;
-    private Integer count;
-    private Integer result;
+    private int id; //默认主键
+    private String tagId; //标签ID
+    private String tpye; //标签类型
+    private String date; //测试日期
+    private Integer isComplete; //标签是否完整，1表示完整，0表示不完整
+    private Integer count; //测试次数
+    private Integer result; //测试结果
 
     public int getId() {
         return id;

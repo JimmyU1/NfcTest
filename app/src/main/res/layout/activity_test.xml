@@ -55,6 +55,7 @@
                     android:enabled="false"
                     android:textSize="15dp" />
             </TableRow>
+
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -105,10 +106,26 @@
                     android:textSize="15dp" />
 
             </TableRow>
+
             <TableRow>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_column="0"
+                    android:layout_span="2"
+                    android:text="贴近标签开始测试"
+                    android:textColor="@color/colorAccent" />
+
+            </TableRow>
+
+            <TableRow>
+
                 <ScrollView
                     android:layout_column="0"
-                    android:layout_span="2">
+                    android:layout_span="2"
+                    android:isScrollContainer="false">
+
                     <TextView
                         android:id="@+id/test_progress"
                         android:layout_width="match_parent"

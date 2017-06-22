@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 /**
- * Created by liuji on 2017/6/13.
+ * NFC工具类
  */
 public class NfcUtil {
 
