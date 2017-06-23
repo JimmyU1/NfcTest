@@ -1,9 +1,9 @@
 package com.crsc.nfctest.resource;
 
-/**
- * Created by liuji on 2017/6/13.
- */
 
+/**
+ * 软件全局静态常量
+ */
 public class AppResource {
     //默认秘钥
     public final static String defaultAuthenticateKey = "ffffffffffff";

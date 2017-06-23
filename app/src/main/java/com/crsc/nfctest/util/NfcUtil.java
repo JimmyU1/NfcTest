@@ -198,7 +198,4 @@ public class NfcUtil {
             return str;
         return "00";
     }
-
-
-
 }

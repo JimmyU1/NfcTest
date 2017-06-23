@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NFC寿命测试工具</string>
+    <string name="app_name">NFC寿命测试</string>
     <string name="nav_test">测试</string>
     <string name="nav_record">记录</string>
     <string name="nav_about">关于</string>
